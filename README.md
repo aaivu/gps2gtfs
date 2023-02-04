@@ -1,22 +1,16 @@
-# Project Title / Research Title
+# Extracting travel time information from Bus GPS raw data
 
 ![project] ![research]
 
 
 
 - <b>Project Lead(s) / Mentor(s)</b>
-    1. Name (talk forum profile link)
-    2. Name (talk forum profile link)
+    1. Dr. T. Uthayasanker 
+    
 - <b>Contributor(s)</b>
-    1. Name (talk forum profile link)
-    2. Name (talk forum profile link)
+    1. R. Shiveswarran
 
-<b>Useful Links </b>
 
-- GitHub : <project_url>
-- Talk Forum : <talk_forum_link>
-
----
 
 ## Summary
 
