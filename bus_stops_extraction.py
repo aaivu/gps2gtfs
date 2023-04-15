@@ -26,6 +26,10 @@ from folium.plugins import HeatMap, MarkerCluster
 from google.colab import drive
 drive.mount('/content/drive')
 
+#Importing 
+# 1. raw GPS data
+# 2. splitted trip data from bus_trip_extraction.py
+# 3. bus stops details (Latitude and longitude)
 path_raw_data = '/content/drive/Shareddrives/MSc - Shiveswarran/Raw Data/digana_2022_08.csv'
 path_trip_ends = '/content/drive/Shareddrives/MSc - Shiveswarran/Processed data/Kandy-Digana Aug 2022/trip_ends.csv'
 path_bus_trips = '/content/drive/Shareddrives/MSc - Shiveswarran/Processed data/Kandy-Digana Aug 2022/bus_trips.csv'
@@ -36,6 +40,7 @@ trip_ends = pd.read_csv(path_trip_ends)
 bus_trips = pd.read_csv(path_bus_trips)
 bus_stops= pd.read_csv(path_bus_stops)
 
+#inital data cleaning steps
 def raw_data_cleaning(raw_data):
   #raw_data = raw_data.drop(drop_columns, axis = 1)
   
@@ -56,6 +61,7 @@ additional_columns = ['servertime','fixtime','address','routeid']
 #drop_columns = ['servertime','fixtime','address','routeid']
 gps_data= raw_data_cleaning(raw_data)
 
+#developing geo-buffer rings around every bus stops
 def bus_stop_buffer_create(gps_data,bus_stops,stop_buffer,extra_buffer):
 
   #Create Geodataframe of GPS data and bus stops data
@@ -87,6 +93,7 @@ stop_buffer = 50
 extra_buffer = 100
 bus_stops_buffer1, bus_stops_buffer2,gps_data,bus_stops_buffer1_add,bus_stops_buffer2_add = bus_stop_buffer_create(gps_data,bus_stops,stop_buffer,extra_buffer)
 
+#splitting trajectories
 def bus_trajectory(gps_data,trip_ends,bus_trips):
   #gps records that are matched with end terminals, are merged with whole GPS records
   trip_ends = trip_ends[['id','bus_stop','trip_id']]
