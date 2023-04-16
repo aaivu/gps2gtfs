@@ -29,7 +29,7 @@ Identifying arrival time and departure time to a bus stop. hence, dwell time can
 ![image](https://user-images.githubusercontent.com/87017018/232291216-a0e4e374-0f6b-4b9c-b2c8-8768bc8e4370.png)
 
 
-#Results
+## Results
 
 Variation of Travel time with the time of a day  
 
