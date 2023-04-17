@@ -41,9 +41,9 @@ Variation of dwell times at each bus stop along a journey
 
 ## More references  
 
-Please cite our work  
+Please cite our work when you use;
 
-S. Ratneswaran and U. Thayasivam, "Extracting potential Travel time information from raw GPS data and Evaluating the Performance of Public transit - a case study in Kandy, Sri Lanka," 2023 3rd International Conference on Intelligent Communication and Computational Techniques (ICCT), Jaipur, India, 2023, pp. 1-7, doi: 10.1109/ICCT56969.2023.10075789.
+S. Ratneswaran and U. Thayasivam, "Extracting potential Travel time information from raw GPS data and Evaluating the Performance of Public transit - a case study in Kandy, Sri Lanka," 2023 3rd International Conference on Intelligent Communication and Computational Techniques (ICCT), Jaipur, India, 2023, pp. 1-7, doi: https://doi.org/10.1109/ICCT56969.2023.10075789
 
 
 ## Note: 
