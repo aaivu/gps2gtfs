@@ -35,13 +35,47 @@ path_trip_ends = '/content/drive/Shareddrives/MSc - Shiveswarran/Processed data/
 path_bus_trips = '/content/drive/Shareddrives/MSc - Shiveswarran/Processed data/Kandy-Digana Aug 2022/bus_trips.csv'
 path_bus_stops = '/content/drive/Shareddrives/MSc - Shiveswarran/Raw Data/bus_stops_654.csv'
 
-raw_data = pd.read_csv(path_raw_data)
-trip_ends = pd.read_csv(path_trip_ends)
-bus_trips = pd.read_csv(path_bus_trips)
-bus_stops= pd.read_csv(path_bus_stops)
+# raw_data = pd.read_csv(path_raw_data)
+# trip_ends = pd.read_csv(path_trip_ends)
+# bus_trips = pd.read_csv(path_bus_trips)
+# bus_stops= pd.read_csv(path_bus_stops)
+
+
+def get_data_from_drive(path):
+
+  """
+    Get csv file from given file path.
+    
+    Args:
+        path (str): Location for the file.
+    
+    Returns:
+        data (pd.DataFrame): A DataFrame Object of given file path.
+    """
+
+  data = pd.read_csv(path)
+  return data
+
+raw_data = get_data_from_drive(path_raw_data)
+trip_ends = get_data_from_drive(path_trip_ends)
+bus_trips = get_data_from_drive(path_bus_trips)
+bus_stops= get_data_from_drive(path_bus_stops)
 
 #inital data cleaning steps
 def raw_data_cleaning(raw_data):
+
+  """
+    Removal of records with error records. 
+    Remove data with zero values for longitude and latitude columns.
+    Sort data by time and device.
+    
+    Args:
+        raw_data (pd.DataFrame): Crude raw GPS data filtered out from the server for the required time window.
+    
+    Returns:
+        gps_data (pd.DataFrame): A cleaned dataframe object of GPS data.
+    """
+
   #raw_data = raw_data.drop(drop_columns, axis = 1)
   
   gps_data = raw_data[raw_data.latitude != 0]
@@ -63,6 +97,24 @@ gps_data= raw_data_cleaning(raw_data)
 
 #developing geo-buffer rings around every bus stops
 def bus_stop_buffer_create(gps_data,bus_stops,stop_buffer,extra_buffer):
+
+  """
+  
+    Buffer and additional buffer  created  to accomodate points if they were missed in standard stop buffer.
+
+    Args:
+        gps_data (pd.DataFrame): Cleaned gps data filtered out from the server for the required time window.
+        bus_stops (pd.DataFrame) : Bus stops data for the trip route
+        stop_buffer (int):  Radius of the buffer area to represent bus stops
+        extra_buffer (int):  Extended radius of the buffer area to represent bus stops.
+    
+    Returns:
+        bus_stops_buffer1 (GeoDataFrame) : Buffer created for filtered  Kandy-Digana direction.
+        bus_stops_buffer2 (GeoDataFrame) : Buffer created for filtered  Digana-Kandy direction
+        gps_data (GeoDataFrame) :  GPS data as GeoDataFrame with projected corrdinates.
+        bus_stops_buffer1_add (GeoDataFrame) : Additional buffer created for filtered  Kandy-Digana direction.
+        bus_stops_buffer2_add (GeoDataFrame) : Additional buffer created for filtered  Digana-Kandy direction.
+  """
 
   #Create Geodataframe of GPS data and bus stops data
   gps_data = gpd.GeoDataFrame(gps_data, geometry=gpd.points_from_xy(gps_data.longitude,gps_data.latitude),crs='EPSG:4326')
@@ -95,6 +147,19 @@ bus_stops_buffer1, bus_stops_buffer2,gps_data,bus_stops_buffer1_add,bus_stops_bu
 
 #splitting trajectories
 def bus_trajectory(gps_data,trip_ends,bus_trips):
+
+  """
+    Create bus trajectory data of sequence of bus stops with direction of trip.
+    
+    Args:
+        gps_data (GeoDataFrame): Bus trips GPS data
+        trip_ends (pd.DataFrame) : Splitted trip data from bus_trip_extraction.py
+        bus_trips (pd.DataFrame) : Bus trips data
+    
+    Returns:
+        bus_trajectory (pd.DataFrame): Sequence of bus trip trajectory data
+  """
+  
   #gps records that are matched with end terminals, are merged with whole GPS records
   trip_ends = trip_ends[['id','bus_stop','trip_id']]
   bus_trajectory = pd.merge(left = gps_data, right  = trip_ends,how = 'outer',left_on ='id', right_on= 'id')
@@ -123,11 +188,41 @@ def bus_trajectory(gps_data,trip_ends,bus_trips):
 bus_trajectory = bus_trajectory(gps_data,trip_ends,bus_trips)
 
 def download_csv(data,filename):
+
+  """
+    To download output as CSV files 
+
+    Args:
+        data (pd.DataFrame): DataFrame Object.
+        filename (str): Name of the file has to be faved.
+    
+    Returns:
+        None
+  """
+
   filename= filename + '.csv'
   data.to_csv(filename, encoding = 'utf-8-sig',index= False)
   files.download(filename)
 
 def stop_buffer_filter(bus_trajectory,bus_stops_buffer1,bus_stops_buffer2,bus_stops_buffer1_add,bus_stops_buffer2_add):
+
+
+  """
+
+    Filter bus trip data of two buffer ranges with all the bus points, only bus stops points.
+    
+    Args:
+        bus_trajectory (pd.DataFrame): Sequence of bus trip trajectory data
+        bus_stops_buffer1 (GeoDataFrame) : Buffer created for filtered  Kandy-Digana direction.
+        bus_stops_buffer2 (GeoDataFrame) : Buffer created for filtered  Digana-Kandy direction
+        bus_stops_buffer1_add (GeoDataFrame) : Additional buffer created for filtered  Kandy-Digana direction.
+        bus_stops_buffer2_add (GeoDataFrame) : Additional buffer created for filtered  Digana-Kandy direction.
+    
+    Returns:
+        bus_trip_all_points (pd.DataFrame): Bus trip data with all points including null for bus_stop
+        bus_stop_all_points (pd.DataFrame): Bus trip data with only bus_stops points
+
+  """
 
   #project to local coordinate system before buffer filtering
   bus_trajectory = bus_trajectory.to_crs('EPSG:5234')
@@ -175,7 +270,20 @@ download_csv(bus_trip_all_points,'bus_trip_all_points')
 #bus_stop_all_points['time'] = pd.to_datetime(bus_stop_all_points['time']).dt.time
 
 def dwell_time_estimation(bus_stop_all_points):
-  
+   
+  """
+    Drop terminal points from all points data. 
+    Calculate arrival_time, departure_time according to check whether grouped record has 0 speed values or not.
+    Dwell time derived in seconds.
+    
+    Args:
+        bus_stop_all_points (pd.DataFrame): Bus trip data with only bus_stops points
+    
+    Returns:
+        bus_stop_times (pd.DataFrame): Bus stops data with arrival_time, departure_time, dwell_time for each stops excluding terminals.
+
+   """
+    
   #Drop records with End Bus terminals 
   bus_stop_all_points.drop(bus_stop_all_points[bus_stop_all_points['bus_stop'] == 'BT01'].index, inplace = True)
   bus_stop_all_points.drop(bus_stop_all_points[bus_stop_all_points['bus_stop'] == 'BT02'].index, inplace = True)
@@ -235,6 +343,17 @@ bus_stop_times = dwell_time_estimation(bus_stop_all_points)
 
 def dwell_time_feature_addition(bus_stop_times):
 
+  """
+    To created aditonal derieved features for bus stops data.
+    
+    Args:
+        bus_stop_times (pd.DataFrame): Bus stops data with arrival_time, departure_time, dwell_time for each stops excluding terminals.
+    
+    Returns:
+        bus_stop_times (pd.DataFrame): Bus stops data with created features. 
+
+  """
+    
   #bus_stop_times = bus_stop_times.drop(bus_stop_times[bus_stop_times['dwell_time_in_seconds']>threshold].index )
 
   bus_stop_times['day_of_week'] = pd.to_datetime(bus_stop_times['date']).dt.weekday
@@ -250,6 +369,21 @@ download_csv(bus_stop_times,'bus_stop_times')
 bus_stop_times.head(1000)
 
 def trip_visualization(trip_id, city_location,bus_stop_dir_1):
+  """
+    Using a  GPS data visualization package of Folium, project the coordinates on 
+    Open Street Map (OSM) to explore how the records are spread and to gain some insights and overview.
+    
+    Args:
+        trip_id (int):  A random trip id to visualize its coordinates' distribution
+        city_location (arr): Longtitude and latitude of city.
+        bus_stop_dir_1 (GeoDataFrame): 
+    
+    Returns:
+        map (MapObject):  A visualizable Map Object for selected trip id .
+        bus_stops_map () : 
+
+  """
+    
   trip = bus_trajectory[bus_trajectory['trip_id']==trip_id]
   trip = trip.to_crs('EPSG:4326')
   bus_stops_dir_1 = bus_stops_dir_1.to_crs('EPSG:4326')
