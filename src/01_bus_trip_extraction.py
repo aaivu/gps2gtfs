@@ -23,10 +23,40 @@ import os
 path_raw_data = '/content/drive/Shareddrives/MSc - Shiveswarran/Raw Data/kadugannawa_2022_10.csv'
 path_bus_terminals = '/content/drive/Shareddrives/MSc - Shiveswarran/Raw Data/bus_terminals_690.csv'
 
-raw_data = pd.read_csv(path_raw_data)
-bus_terminals= pd.read_csv(path_bus_terminals)
+def get_data_from_drive(path):
+
+  """
+    Get csv file from given file path.
+    
+    Args:
+        path (str): Location for the file.
+    
+    Returns:
+        data (pd.DataFrame): A DataFrame Object of given file path.
+    """
+
+  data = pd.read_csv(path)
+  return data
+
+# raw_data = pd.read_csv(path_raw_data)
+raw_data = get_data_from_drive(path_raw_data)
+# bus_terminals= pd.read_csv(path_bus_terminals)
+bus_terminals = get_data_from_drive(path_bus_terminals)
 
 def raw_data_cleaning(raw_data):
+
+  """
+    Removal of records with error records. 
+    Remove data with zero values for longitude and latitude columns.
+    Sort data by time and device.
+    
+    Args:
+        raw_data (pd.DataFrame): Crude raw GPS data filtered out from the server for the required time window.
+    
+    Returns:
+        gps_data (pd.DataFrame): A cleaned dataframe object of GPS data.
+    """
+  
   #raw_data = raw_data.drop(drop_columns, axis = 1)
 
   gps_data = raw_data[raw_data.latitude != 0]
@@ -46,7 +76,23 @@ additional_columns = ['servertime','fixtime','address','routeid']
 gps_data= raw_data_cleaning(raw_data)
 
 def trip_ends(gps_data,bus_terminals,end_buffer):
-   #converting to GeoDataframe with Coordinate Reference system 4326 
+
+  """
+    To extract trip ends dataframe with given buffer range.
+    Filter the records within terminals selected buffer range. 
+    Within the filtered records get entry & exit to terminals.
+
+
+    Args:
+        gps_data (pd.DataFrame): Cleaned gps data filtered out from the server for the required time window.
+        bus_terminals (pd.DataFrame): End and start terminals for the trip.
+        end_buffer (int):  Radius of the buffer area to represent terminals.
+    
+    Returns:
+        trip_ends (pd.DataFrame): Trip data with extracted terminals.
+  """
+
+  #converting to GeoDataframe with Coordinate Reference system 4326 
   gps_data = gpd.GeoDataFrame(gps_data, geometry=gpd.points_from_xy(gps_data.longitude,gps_data.latitude),crs='EPSG:4326')
   bus_terminals = gpd.GeoDataFrame(bus_terminals, geometry=gpd.points_from_xy(bus_terminals.longitude,bus_terminals.latitude),crs='EPSG:4326') 
   
@@ -105,8 +151,19 @@ def trip_ends(gps_data,bus_terminals,end_buffer):
 
   return trip_ends
 
-#funcion to download output as CSV files
 def download_csv(data,filename):
+
+  """
+    To download output as CSV files 
+
+    Args:
+        data (pd.DataFrame): DataFrame Object.
+        filename (str): Name of the file has to be faved.
+    
+    Returns:
+        None
+  """
+    
   filename= filename + '.csv'
   data.to_csv(filename, encoding = 'utf-8-sig',index= False)
   files.download(filename)
@@ -117,6 +174,18 @@ download_csv(trip_ends,'trip_ends')
 
 def trip_extraction(trip_ends):
   
+  """
+    To extract bus trips with derived columns.
+    Create end_time, end_terminal for a bus trip.
+    Create features of duration, duration_in_mins, day_of_the_week, hour_of_day
+
+    Args:
+        trip_ends (pd.DataFrame): Filtered bus trip data with terminals.
+    
+    Returns:
+        bus_trips (pd.DataFrame): Bus trip terminals data with derived features.
+  """
+
   bus_trips = trip_ends.copy()
   bus_trips[['end_time','end_terminal']] = bus_trips[['time','bus_stop']].shift(-1)
   bus_trips = bus_trips.iloc[::2]
@@ -152,6 +221,21 @@ download_csv(bus_trips,'bus_trips')
 
 
 def map_visualization(gps_data,city_location,bus_terminals,bus_terminals_buffer):
+
+  """
+    Using a  GPS data visualization package of Folium, project the coordinates on 
+    Open Street Map (OSM) to explore how the records are spread and to gain some insights and overview.
+
+    Args:
+        gps_data (pd.DataFrame): GPS data with selected device ID.
+        city_location (arr): Longtitude and lattitude of a city
+        bus_terminals (GeoDataFrame) : Bus terminal data with geometry column
+        bus_terminals_buffer (GeoDataFrame) :  Bus terminal data with geometry column buffer range      
+    
+    Returns:
+        map (MapObject): A visualizable Map Object.
+  """
+    
   gps_data = gpd.GeoDataFrame(gps_data, geometry=gpd.points_from_xy(gps_data.longitude,gps_data.latitude),crs='EPSG:4326')  #converting to GeoDataframe with Coordinate Reference system 4326
   map =  folium.Map(location=city_location, tiles='openstreetmap', zoom_start=14)
   for idx, row in gps_data.iterrows():
@@ -165,6 +249,8 @@ def map_visualization(gps_data,city_location,bus_terminals,bus_terminals_buffer)
   map
   return map
 
+
+
 bus_terminals = gpd.GeoDataFrame(bus_terminals, geometry=gpd.points_from_xy(bus_terminals.longitude,bus_terminals.latitude),crs='EPSG:4326') 
 bus_terminals = bus_terminals.to_crs('EPSG:5234')
 bus_terminals_buffer = gpd.GeoDataFrame(bus_terminals, geometry = bus_terminals.geometry.buffer(end_buffer))
@@ -173,7 +259,7 @@ gps_data['deviceid'].value_counts()
 
 data84 = gps_data[gps_data['deviceid']==84]
 
-city_location = [7.2906,80.6337] #Kandy city location
+city_location = [7.2906,80.6337]  #Kandy city location
 map = map_visualization(data84,city_location,bus_terminals,bus_terminals_buffer)
 
 map
