@@ -4,12 +4,10 @@ import pandas as pd
 def read_csv_file(path, type_of_data):
     try:
         # Attempt to read the CSV file
-        print(f"Started reading {type_of_data} in the path {path}")
         df = pd.read_csv(path)
-        print(f"Successfully Completed reading {type_of_data}.")
         return df
     except FileNotFoundError:
-        print(f"File not found error. Please check the file path for {type_of_data}. Path provided is {path}")
+        print(f"File not found error. Please check the file path for . Path provided is {path}")
     except pd.errors.ParserError:
         print(f"Parser error. The {type_of_data} file may have an invalid format.")
     except Exception as e:
