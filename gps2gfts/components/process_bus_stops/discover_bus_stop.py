@@ -16,7 +16,6 @@ def match_data(args):
 
 
 def match_gps_data_with_bus_stops(trajectory_data, bus_stops_buffer, bus_stops_buffer_extended):
-    trajectory_data = trajectory_data[:5000]
     num_processes = cpu_count() - 1  # Number of available CPU coresq
     chunk_size = len(trajectory_data) // num_processes
     chunks = [(trajectory_data[i:i + chunk_size], bus_stops_buffer, bus_stops_buffer_extended)
