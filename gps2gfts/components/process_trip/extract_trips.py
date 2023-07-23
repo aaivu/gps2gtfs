@@ -44,7 +44,6 @@ def extract_trip_ends(trip_ends):
     # Set 'entry/exit' column based on max and min 'devicetime' rows for each group
     trip_ends.loc[max_devicetime_rows, 'entry/exit'] = '0'
     trip_ends.loc[min_devicetime_rows, 'entry/exit'] = '1'
-    print("time for finding group ends")
     # Drop rows with NaN values in 'entry/exit' column (if any)
     trip_ends.dropna(subset=['entry/exit'], inplace=True)
     return trip_ends.reset_index(drop=True)
@@ -80,47 +79,19 @@ def process_extract_trip(gps_data, bus_terminals, end_buffer):
           trip_ends (pd.DataFrame): Trip data with extracted terminals.
     """
     # converting to GeoDataframe
-    t1 = datetime.now()
     gps_data = convert_to_geo_data_frame(gps_data)
-    print("to convert geo data frame for geo data")
-    print(datetime.now() - t1)
-    t1 = datetime.now()
-    print("to convert geo data frame for bus terminal")
     bus_terminals = convert_to_geo_data_frame(bus_terminals)
-    print(datetime.now() - t1)
-    t1 = datetime.now()
     # Split the GPS data into chunks to be processed in parallel
     num_processes = cpu_count()  # Number of available CPU coresq
     chunk_size = len(gps_data) // num_processes
-    print("to calculate chunck size")
-    print(datetime.now() - t1)
-    t1 = datetime.now()
     gps_data_chunks = [gps_data[i:i + chunk_size] for i in range(0, len(gps_data), chunk_size)]
-    print("to break as chunck")
-    print(datetime.now() - t1)
-    t1 = datetime.now()
     chunks = [(gps_data[i:i + chunk_size], bus_terminals, end_buffer)
               for i in range(0, len(gps_data), chunk_size)]
-    print("to create chunks")
-    print(datetime.now() - t1)
-    t1 = datetime.now()
     with Pool(processes=num_processes) as pool:
         updated_chunks = pool.map(match_gps_data_with_bus_terminals, chunks)
-    print("to find end points")
-    print(datetime.now() - t1)
-    t1 = datetime.now()
     gps_data = pd.concat(updated_chunks, ignore_index=True)
-    print("to merge")
-    print(datetime.now() - t1)
-    t1 = datetime.now()
     trip_ends = gps_data.dropna()  # filter records within terminal buffer
-    print("to drop empty ones except ends")
-    print(datetime.now() - t1)
-    t1 = datetime.now()
     # EXTRACT TRIP ENDS
     trip_ends = extract_trip_ends(trip_ends)
-    print("to extract trip ends")
-    print(datetime.now() - t1)
-    t1 = datetime.now()
     # Providing unique trip id for trips which have entry / exit values within the 2 bus end terminals
     return assign_trip_ids(trip_ends)
