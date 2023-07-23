@@ -2,6 +2,7 @@ from gps2gfts.components.load_data import load_data_from_csv
 from gps2gfts.components.pre_processing import data_cleaner
 from gps2gfts.components.process_bus_stops import prepare_bus_data
 from gps2gfts.components.process_bus_stops import discover_bus_stop
+from gps2gfts.components.process_bus_stops import feature_calculation
 from datetime import datetime
 
 if __name__ == '__main__':
@@ -31,10 +32,23 @@ if __name__ == '__main__':
     print("time needed for preparing trajectory data")
     print(datetime.now() - t1)
     t1 = datetime.now()
-    result = discover_bus_stop.match_bus_stops(bus_trajectory, bus_stops_buffer1, bus_stops_buffer2,
+    bus_trip_all_points, bus_stop_all_points = discover_bus_stop.match_bus_stops(bus_trajectory, bus_stops_buffer1, bus_stops_buffer2,
                                                bus_stops_buffer1_extended,
                                                bus_stops_buffer2_extended)
     print("time needed for matching")
     print(datetime.now() - t1)
+    filename = "bus_trip_all_points" + '.csv'
+    bus_trip_all_points.to_csv(filename, encoding='utf-8-sig', index=False)
     filename = "abcd" + '.csv'
-    result[1].to_csv(filename, encoding='utf-8-sig', index=False)
+    bus_stop_all_points.to_csv(filename, encoding='utf-8-sig', index=False)
+    t1 = datetime.now()
+    bus_stop_times =  feature_calculation.dwell_time_calculation(bus_stop_all_points)
+    print("time needed for dwell time calculation")
+    print(datetime.now() - t1)
+    t1 = datetime.now()
+    bus_stop_times = feature_calculation.dwell_time_feature_addition(bus_stop_times)
+    print("time needed for feature calculation")
+    print(datetime.now() - t1)
+    filename = "bus_stop_times" + '.csv'
+    bus_stop_times.to_csv(filename, encoding='utf-8-sig', index=False)
+    t1 = datetime.now()
