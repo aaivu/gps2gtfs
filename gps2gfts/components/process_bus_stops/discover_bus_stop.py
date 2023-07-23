@@ -2,7 +2,7 @@ import pandas as pd
 from multiprocessing import Pool, cpu_count
 
 
-def match_data(args):
+def match_gps_points(args):
     trajectory_data, bus_stops_buffer, bus_stops_buffer_extended = args
     for i in range(len(trajectory_data)):
         for stop in range(len(bus_stops_buffer)):
@@ -16,12 +16,12 @@ def match_data(args):
 
 
 def match_gps_data_with_bus_stops(trajectory_data, bus_stops_buffer, bus_stops_buffer_extended):
-    num_processes = cpu_count() - 1  # Number of available CPU coresq
+    num_processes = cpu_count()  # Number of available CPU cores
     chunk_size = len(trajectory_data) // num_processes
     chunks = [(trajectory_data[i:i + chunk_size], bus_stops_buffer, bus_stops_buffer_extended)
               for i in range(0, len(trajectory_data), chunk_size)]
     with Pool(processes=num_processes) as pool:
-        updated_chunks = pool.map(match_data, chunks)
+        updated_chunks = pool.map(match_gps_points, chunks)
     return pd.concat(updated_chunks, ignore_index=True)
 
 def match_bus_stops(bus_trajectory, bus_stops_buffer1, bus_stops_buffer2, bus_stops_buffer1_extended,
