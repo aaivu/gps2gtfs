@@ -68,10 +68,11 @@ def prepare_bus_trajectory_data(gps_data, processed_data, bus_trips):
 
     trip = 1
     for i in range(len(bus_trajectory) - 1):
-        if (bus_trajectory.at[i, 'trip_id'] == trip) & (bus_trajectory.at[i + 1, 'trip_id'] == 0):
-            bus_trajectory.at[i + 1, 'trip_id'] = trip
-        elif (bus_trajectory.at[i, 'trip_id'] == trip) & (bus_trajectory.at[i + 1, 'trip_id'] == trip):
-            trip = trip + 1
+        if bus_trajectory.at[i, 'trip_id'] == trip:
+            if bus_trajectory.at[i + 1, 'trip_id'] == 0:
+                bus_trajectory.at[i + 1, 'trip_id'] = trip
+            elif bus_trajectory.at[i + 1, 'trip_id'] == trip:
+                trip = trip + 1
 
     bus_trajectory.drop(bus_trajectory[bus_trajectory['trip_id'] == 0].index,
                         inplace=True)  # drop records that are not identified as a bus trip

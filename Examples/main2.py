@@ -24,9 +24,17 @@ if __name__ == '__main__':
     extra_buffer = 100
     bus_stops_buffer1, bus_stops_buffer2, gps_data, bus_stops_buffer1_extended, bus_stops_buffer2_extended = prepare_bus_data.bus_stop_buffer_create(
         cleaned_gps_data, read_bus_stops, stop_buffer, extra_buffer)
+    print("time needed for bus buffer creation")
+    print(datetime.now() - t1)
+    t1 = datetime.now()
     bus_trajectory = prepare_bus_data.prepare_bus_trajectory_data(gps_data, read_processed_data, read_bus_trips)
-    print("fsgs")
+    print("time needed for preparing trajectory data")
+    print(datetime.now() - t1)
+    t1 = datetime.now()
     result = discover_bus_stop.match_bus_stops(bus_trajectory, bus_stops_buffer1, bus_stops_buffer2,
                                                bus_stops_buffer1_extended,
                                                bus_stops_buffer2_extended)
-    print(result)
+    print("time needed for matching")
+    print(datetime.now() - t1)
+    filename = "abcd" + '.csv'
+    result[1].to_csv(filename, encoding='utf-8-sig', index=False)
