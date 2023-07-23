@@ -14,7 +14,7 @@ if __name__ == '__main__':
     trip_ends = extract_trips.process_extract_trip(cleaned_gps_data, read_bus_terminals, end_buffer)
     bus_trips = extract_trip_details.trip_data_extraction(trip_ends)
     filename = "trip_ends" + '.csv'
-    bus_trips.to_csv(filename, encoding='utf-8-sig', index=False)
+    trip_ends.to_csv(filename, encoding='utf-8-sig', index=False)
     print(bus_trips)
     filename = "finn" + '.csv'
     bus_trips.to_csv(filename, encoding='utf-8-sig', index=False)
