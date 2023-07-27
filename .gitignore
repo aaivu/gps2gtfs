@@ -37,6 +37,7 @@ bld/
 #wwwroot/
 
 .idea/
+venv/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
