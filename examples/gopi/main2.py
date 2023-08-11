@@ -1,8 +1,6 @@
-from gps2gfts.components.load_data import load_data_from_csv
-from gps2gfts.components.pre_processing import data_cleaner
-from gps2gfts.components.process_bus_stops import prepare_bus_data
-from gps2gfts.components.process_bus_stops import discover_bus_stop
-from gps2gfts.components.process_bus_stops import feature_calculation
+from gps2gtfs.load_data import load_data_from_csv
+from gps2gtfs.preprocessing import data_cleaner
+from gps2gtfs.stop import prepare_bus_data, discover_bus_stop, feature_calculation
 from datetime import datetime
 
 if __name__ == '__main__':
@@ -22,7 +20,7 @@ if __name__ == '__main__':
     print(datetime.now() - t1)
     t1 = datetime.now()
     stop_buffer = 50
-    extra_buffer = 100
+    extra_buffer = 100  # including or excluding 50?
     bus_stops_buffer1, bus_stops_buffer2, gps_data, bus_stops_buffer1_extended, bus_stops_buffer2_extended = prepare_bus_data.bus_stop_buffer_create(
         cleaned_gps_data, read_bus_stops, stop_buffer, extra_buffer)
     print("time needed for bus buffer creation")
@@ -33,8 +31,8 @@ if __name__ == '__main__':
     print(datetime.now() - t1)
     t1 = datetime.now()
     bus_trip_all_points, bus_stop_all_points = discover_bus_stop.match_bus_stops(bus_trajectory, bus_stops_buffer1, bus_stops_buffer2,
-                                               bus_stops_buffer1_extended,
-                                               bus_stops_buffer2_extended)
+                                                                                 bus_stops_buffer1_extended,
+                                                                                 bus_stops_buffer2_extended)
     print("time needed for matching")
     print(datetime.now() - t1)
     filename = "bus_trip_all_points" + '.csv'
