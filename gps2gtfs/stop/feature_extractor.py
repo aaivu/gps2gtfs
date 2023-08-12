@@ -4,6 +4,7 @@ from typing import List
 import numpy as np
 from pandas import DataFrame, concat, to_datetime
 from gps2gtfs.data_field.im_field import ExtractedStopField, StopTimeField
+from gps2gtfs.utility.logger import logger
 
 
 def extract_stop_features(stops: DataFrame) -> DataFrame:
@@ -23,6 +24,8 @@ def calculate_stop_times(stops_df: DataFrame) -> DataFrame:
         stops_df[stops_df[ExtractedStopField.BUS_STOP.value] == terminals[1]].index,
         inplace=True,
     )
+
+    logger.info("Preparing to extract stop details")
 
     # grouping all records filtered for every stop
     stops_df[ExtractedStopField.GROUPED_ENDS.value] = (
@@ -97,6 +100,7 @@ def calculate_stop_times(stops_df: DataFrame) -> DataFrame:
         StopTimeField.DWELL_TIME.value
     ] / np.timedelta64(1, "s")
 
+    logger.info("Successfully extracted stop related features")
     return stop_times_df
 
 

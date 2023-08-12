@@ -3,6 +3,7 @@ from typing import Optional
 from geopandas import GeoDataFrame, points_from_xy
 from pandas import DataFrame, errors, read_csv
 from gps2gtfs.data_field.input_field import RawGPSField
+from gps2gtfs.utility.logger import logger
 
 
 def read_csv_file(path: str, file_name: str = None) -> Optional[DataFrame]:
@@ -35,15 +36,17 @@ def read_csv_file(path: str, file_name: str = None) -> Optional[DataFrame]:
         ...     print("Error occurred while reading the CSV file.")
     """
     try:
-        return read_csv(path)
+        read_csv_df = read_csv(path)
+        logger.info(f"Successfully read the {file_name} file in the path {path}")
+        return read_csv_df
     except FileNotFoundError:
-        print(
+        logger.error(
             f"File is not found. Please check the file path. Provided path is {path}."
         )
     except errors.ParserError:
-        print(f"Parser error. The file {file_name} may has an invalid format.")
+        logger.error(f"Parser error. The file {file_name} may has an invalid format.")
     except Exception as e:
-        print(
+        logger.error(
             f"An unexpected error occurred when reading the file {file_name}. Error is {str(e)}"
         )
 
@@ -76,6 +79,7 @@ def write_as_csv_file(pd_df: DataFrame, path: str) -> None:
         >>> print(f"Data written to {file_path}.")
     """
     pd_df.to_csv(path, index=False)
+    logger.info(f"Successfully wrote the dataframe into CSV in {path}")
 
 
 def pandas_to_geo_data_frame(raw_gps_pd_df: DataFrame) -> GeoDataFrame:

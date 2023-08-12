@@ -4,9 +4,11 @@ from typing import List
 from numpy import ndarray, select, timedelta64
 from pandas import DataFrame, Series, to_datetime
 from gps2gtfs.data_field.im_field import TerminalGPSField, TripField
+from gps2gtfs.utility.logger import logger
 
 
 def extract_trip_features(trips: DataFrame) -> DataFrame:
+    logger.info("Starting to extracting features for the trips")
     trips = trips.copy()
     add_end_time_and_end_terminal(trips)
     trips = trips.iloc[::2]
@@ -55,6 +57,7 @@ def extract_trip_features(trips: DataFrame) -> DataFrame:
     trips[TripField.DAY_OF_WEEK.value] = find_day_of_week(trips)
     trips[TripField.HOUR_OF_DAY.value] = find_hour_of_day(trips)
 
+    logger.info("Successfully extracted features for the trips")
     return trips
 
 
@@ -62,9 +65,11 @@ def add_end_time_and_end_terminal(trips: DataFrame) -> None:
     trips[[TripField.END_TIME.value, TripField.END_TERMINAL.value]] = trips[
         [TerminalGPSField.TIME.value, TerminalGPSField.BUS_STOP.value]
     ].shift(-1)
+    logger.info("Added End Time & End Terminal Details")
 
 
 def find_direction(trips: DataFrame) -> ndarray:
+    logger.info("Finding Direction data for the trips")
     terminals: List[str] = trips[TripField.START_TERMINAL.value].unique().tolist()
     conditions = [
         (trips[TripField.START_TERMINAL.value] == terminals[0]),
@@ -85,6 +90,7 @@ def add_trip_duration(trips: DataFrame) -> None:
     trips[TripField.DURATION_IN_MINS.value] = trips[
         TripField.DURATION.value
     ] / timedelta64(1, "m")
+    logger.info("Extracted Trip Duration")
 
 
 def find_day_of_week(trips: DataFrame) -> Series:

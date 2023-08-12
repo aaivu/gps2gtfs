@@ -7,6 +7,7 @@ from gps2gtfs.data_field.im_field import (
 )
 from gps2gtfs.data_field.input_field import RawGPSField, StopField, TerminalField
 from gps2gtfs.utility.data_io_converter import read_csv_file
+from gps2gtfs.utility.logger import logger
 
 
 def load(file_paths: Dict[str, str]) -> List[Optional[DataFrame]]:
@@ -104,12 +105,14 @@ def load_data_for_pipeline(
             and (not trip_terminals_fields - set(trip_terminals_df.columns.values))
             and (not stops_fields - set(stops_df.columns.values))
         ):
+            logger.info("Data Loaded successfully for pipeline")
             return [raw_gps_df, trip_terminals_df, stops_df]
         else:
-            print("Following columns should be included in your CSV files,")
-            print(f"In Raw GPS data: {raw_gps_fields}")
-            print(f"In Trip terminals data: {trip_terminals_fields}")
-            print(f"In Stops data: {stops_fields}")
+            logger.error("Failed to load data for pipeline")
+            logger.error("Following columns should be included in your CSV files,")
+            logger.error(f"In Raw GPS data: {raw_gps_fields}")
+            logger.error(f"In Trip terminals data: {trip_terminals_fields}")
+            logger.error(f"In Stops data: {stops_fields}")
 
 
 def load_data_for_trip_calculation(
@@ -128,11 +131,13 @@ def load_data_for_trip_calculation(
         if (not raw_gps_fields - set(raw_gps_df.columns.values)) and (
             not trip_terminals_fields - set(trip_terminals_df.columns.values)
         ):
+            logger.info("Data loaded successfully for trip calculation")
             return [raw_gps_df, trip_terminals_df]
         else:
-            print("Following columns should be included in your CSV files,")
-            print(f"In Raw GPS data: {raw_gps_fields}")
-            print(f"In Trip terminals data: {trip_terminals_fields}")
+            logger.error("Failed to load Data for trip calculation")
+            logger.error("Following columns should be included in your CSV files,")
+            logger.error(f"In Raw GPS data: {raw_gps_fields}")
+            logger.error(f"In Trip terminals data: {trip_terminals_fields}")
 
 
 def load_data_for_stop_calculation(
@@ -162,10 +167,11 @@ def load_data_for_stop_calculation(
             and (not trips_fields - set(trips_df.columns.values))
             and (not stops_fields - set(stops_df.columns.values))
         ):
+            logger.info("Data loaded successfully for stop calculation")
             return [raw_gps_df, processed_gps_df, trips_df, stops_df]
         else:
-            print("Following columns should be included in your CSV files,")
-            print(f"In Raw GPS data: {raw_gps_fields}")
-            print(f"In Processed GPS data: {processed_gps_fields}")
-            print(f"In Trips data: {trips_fields}")
-            print(f"In Stops data: {stops_fields}")
+            logger.error("Following columns should be included in your CSV files,")
+            logger.error(f"In Raw GPS data: {raw_gps_fields}")
+            logger.error(f"In Processed GPS data: {processed_gps_fields}")
+            logger.error(f"In Trips data: {trips_fields}")
+            logger.error(f"In Stops data: {stops_fields}")
