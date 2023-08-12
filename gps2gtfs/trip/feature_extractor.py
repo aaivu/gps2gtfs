@@ -3,7 +3,8 @@ from typing import List
 
 from numpy import ndarray, select, timedelta64
 from pandas import DataFrame, Series, to_datetime
-from gps2gtfs.data_field.im_field import TerminalGPSField, TripField
+from gps2gtfs.data_field.im_field import TerminalGPSField
+from gps2gtfs.data_field.output_field import TripField
 from gps2gtfs.utility.logger import logger
 
 

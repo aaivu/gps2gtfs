@@ -3,7 +3,8 @@ from typing import List
 
 import numpy as np
 from pandas import DataFrame, concat, to_datetime
-from gps2gtfs.data_field.im_field import ExtractedStopField, StopTimeField
+from gps2gtfs.data_field.im_field import ExtractedStopField
+from gps2gtfs.data_field.output_field import StopTimeField
 from gps2gtfs.utility.logger import logger
 
 
