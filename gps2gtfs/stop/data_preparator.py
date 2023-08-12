@@ -6,8 +6,8 @@ from gps2gtfs.data_field.im_field import (
     CleanedRawGPSField,
     ProcessedGPSField,
     TrajectoryField,
-    TripField,
 )
+from gps2gtfs.data_field.output_field import TripField
 from gps2gtfs.data_field.input_field import StopField
 from gps2gtfs.utility.data_io_converter import (
     extend_geo_buffer,
@@ -85,7 +85,7 @@ def prepare_trajectory_df(
         right_on=ProcessedGPSField.ID.value,
     )
 
-    # gps records that are not associated with the terminals are asssigned as trip id = 0
+    # gps records that are not associated with the terminals are assigned as trip id = 0
     trajectory_df[TrajectoryField.TRIP_ID.value].fillna(0, inplace=True)
 
     # run a loop to assign trip_id to records that are in between the terminals

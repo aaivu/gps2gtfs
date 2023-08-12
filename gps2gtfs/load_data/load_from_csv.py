@@ -3,8 +3,8 @@ from typing import Dict, List, Optional
 from pandas import DataFrame
 from gps2gtfs.data_field.im_field import (
     ProcessedGPSField,
-    TripField,
 )
+from gps2gtfs.data_field.output_field import TripField
 from gps2gtfs.data_field.input_field import RawGPSField, StopField, TerminalField
 from gps2gtfs.utility.data_io_converter import read_csv_file
 from gps2gtfs.utility.logger import logger
@@ -49,7 +49,66 @@ def load(file_paths: Dict[str, str]) -> List[Optional[DataFrame]]:
     return [read_csv_file(path, file_name) for file_name, path in file_paths.items()]
 
 
-def load_data_for_pipeline(
+def load_data_for_trip_pipeline(
+    raw_gps_data_path: str,
+    trip_terminals_data_path: str,
+) -> Optional[List[DataFrame]]:
+    """
+    Load and validate data for a processing pipeline.
+
+    This function loads data from specified CSV files for a processing pipeline that involves raw GPS
+    data, trip terminals data. It performs validation to ensure that the loaded data
+    contains the required columns.
+
+    Parameters:
+        raw_gps_data_path (str): File path to the CSV containing raw GPS data.
+        trip_terminals_data_path (str): File path to the CSV containing trip terminals data.
+
+    Returns:
+        Optional[List[DataFrame]]: A list of pandas DataFrames containing the loaded data. If any
+                                   data file is not found or does not contain the required columns,
+                                   None is returned.
+
+    Notes:
+        - The function uses the 'load' function to load data from the specified file paths.
+        - It validates that the loaded DataFrames contain the required columns for raw GPS data,
+          trip terminals data, and stops data.
+        - If the data passes validation, a list containing the loaded DataFrames is returned.
+        - If any data file is missing or contains incorrect columns, an error message is printed,
+          and None is returned.
+
+    Example:
+        >>> raw_gps_path = "path/to/raw_gps_data.csv"
+        >>> trip_terminals_path = "path/to/trip_terminals_data.csv"
+        >>> data_frames = load_data_for_trip_pipeline(raw_gps_path, trip_terminals_path)
+        >>> if data_frames is not None:
+        ...     # Proceed with the processing pipeline using the loaded data
+        ... else:
+        ...     print("Data loading and validation failed.")
+    """
+    file_paths = {
+        "Raw GPS data": raw_gps_data_path,
+        "Trip terminals data": trip_terminals_data_path,
+    }
+
+    raw_gps_df, trip_terminals_df = load(file_paths)
+    if not any([df is None for df in [raw_gps_df, trip_terminals_df]]):
+        raw_gps_fields = {f.value for f in RawGPSField}
+        trip_terminals_fields = {f.value for f in TerminalField}
+        if (
+            (not raw_gps_fields - set(raw_gps_df.columns.values))
+            and (not trip_terminals_fields - set(trip_terminals_df.columns.values))
+        ):
+            logger.info("Data Loaded successfully for pipeline")
+            return [raw_gps_df, trip_terminals_df]
+        else:
+            logger.error("Failed to load data for pipeline")
+            logger.error("Following columns should be included in your CSV files,")
+            logger.error(f"In Raw GPS data: {raw_gps_fields}")
+            logger.error(f"In Trip terminals data: {trip_terminals_fields}")
+
+
+def load_data_for_trip_stop_pipeline(
     raw_gps_data_path: str,
     trip_terminals_data_path: str,
     stops_data_path: str,
@@ -83,7 +142,7 @@ def load_data_for_pipeline(
         >>> raw_gps_path = "path/to/raw_gps_data.csv"
         >>> trip_terminals_path = "path/to/trip_terminals_data.csv"
         >>> stops_path = "path/to/stops_data.csv"
-        >>> data_frames = load_data_for_pipeline(raw_gps_path, trip_terminals_path, stops_path)
+        >>> data_frames = load_data_for_trip_stop_pipeline(raw_gps_path, trip_terminals_path, stops_path)
         >>> if data_frames is not None:
         ...     # Proceed with the processing pipeline using the loaded data
         ... else:

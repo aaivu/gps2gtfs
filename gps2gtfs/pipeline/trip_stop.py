@@ -1,4 +1,4 @@
-from gps2gtfs.load_data.load_from_csv import load_data_for_pipeline
+from gps2gtfs.load_data.load_from_csv import load_data_for_trip_stop_pipeline
 from gps2gtfs.preprocessing.data_cleaner import clean
 from gps2gtfs.stop.data_preparator import create_stop_buffers, prepare_trajectory_df
 from gps2gtfs.stop.feature_extractor import extract_stop_features
@@ -19,7 +19,7 @@ def run(
 ):
     logger.info("Pipeline method called !")
     logger.info("Starting Pipeline for extracting Trip Data")
-    loaded_data = load_data_for_pipeline(
+    loaded_data = load_data_for_trip_stop_pipeline(
         raw_gps_data_path, trip_terminals_data_path, stops_data_path
     )
     if loaded_data:

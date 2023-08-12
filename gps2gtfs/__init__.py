@@ -6,6 +6,5 @@ from . import (  # noqa F401
     stop,
     trip,
     utility,
-    pipeline,
-    pipline_trip
+    pipeline
 )
