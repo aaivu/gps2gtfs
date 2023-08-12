@@ -84,7 +84,6 @@ def process_extract_trip(gps_data, bus_terminals, end_buffer):
     # Split the GPS data into chunks to be processed in parallel
     num_processes = cpu_count()  # Number of available CPU coresq
     chunk_size = len(gps_data) // num_processes
-    gps_data_chunks = [gps_data[i:i + chunk_size] for i in range(0, len(gps_data), chunk_size)]
     chunks = [(gps_data[i:i + chunk_size], bus_terminals, end_buffer)
               for i in range(0, len(gps_data), chunk_size)]
     with Pool(processes=num_processes) as pool:

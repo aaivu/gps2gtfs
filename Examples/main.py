@@ -2,6 +2,7 @@ from gps2gfts.components.load_data import load_data_from_csv
 from gps2gfts.components.pre_processing import data_cleaner
 from gps2gfts.components.process_trip import extract_trips
 from gps2gfts.components.process_trip import extract_trip_details
+from datetime import datetime
 
 if __name__ == '__main__':
     RAW_DATA_PATH = '../../raw_data/digana_2022_07.csv'

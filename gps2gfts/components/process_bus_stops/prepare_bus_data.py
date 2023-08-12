@@ -1,6 +1,6 @@
 import pandas as pd
 import geopandas as gpd
-from ..Utility import geo_data_frame_utility
+from ..utility import geo_data_frame_utility
 from datetime import datetime, date
 
 
