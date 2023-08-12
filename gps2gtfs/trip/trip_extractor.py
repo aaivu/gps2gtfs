@@ -9,6 +9,7 @@ from gps2gtfs.utility.data_io_converter import (
     extend_geo_buffer,
     pandas_to_geo_data_frame,
 )
+from gps2gtfs.utility.logger import logger
 
 TERMINAL_ENTRY = "1"
 TERMINAL_EXIT = "0"
@@ -19,22 +20,27 @@ def extract_trips(
     trip_terminals_df: DataFrame,
     buffer_radius: int,
 ) -> DataFrame:
+    logger.info("Getting ready to extract the Trip Details")
     # Converting to GeoDataframe
     raw_gps_geo_df = pandas_to_geo_data_frame(raw_gps_df)
     trip_terminals_geo_df = pandas_to_geo_data_frame(trip_terminals_df)
 
+    logger.info("Preparing to match GPS Data Points to Bus Terminal Coordinates")
     # Splitting the GPS data into chunks to be processed in parallel
     num_processes = cpu_count()  # Number of available CPU cores
     chunk_size = len(raw_gps_geo_df) // num_processes
     chunks = [
-        (raw_gps_geo_df[i : (i + chunk_size)], trip_terminals_geo_df, buffer_radius)
+        (raw_gps_geo_df[i: (i + chunk_size)], trip_terminals_geo_df, buffer_radius)
         for i in range(0, len(raw_gps_geo_df), chunk_size)
     ]
 
+    logger.info("Starting to match GPS Data Points to Bus Terminal Coordinates")
     with Pool(processes=num_processes) as pool:
         updated_chunks = pool.map(match_raw_gps_data_with_terminals, chunks)
 
     raw_gps_data_with_terminals: DataFrame = concat(updated_chunks, ignore_index=True)
+    logger.info("Successfully matched GPS Data Points to Bus Terminal Coordinates")
+
     gps_data_within_terminal_buffer = (
         raw_gps_data_with_terminals.dropna()
     )  # Filtering records within terminal buffer
@@ -74,6 +80,7 @@ def match_raw_gps_data_with_terminals(args: Tuple) -> GeoDataFrame:
 
 def extract_trip_terminals(gps_data_within_terminal_buffer: DataFrame) -> DataFrame:
     # Grouping the filtered records of one trip terminal and one date
+    logger.info("Preparing to extract trip terminals")
     gps_data_within_terminal_buffer[TerminalGPSField.GROUPED_TERMINALS.value] = (
         (
             gps_data_within_terminal_buffer[TerminalGPSField.BUS_STOP.value].shift()
@@ -85,6 +92,8 @@ def extract_trip_terminals(gps_data_within_terminal_buffer: DataFrame) -> DataFr
         )
     ).cumsum()
 
+    logger.info("Successfully extracted Trip Ends")
+    logger.info("Extracting Entry/ Exit Values for Trip Ends")
     # Finding only the entry or exit record of the terminals
     # Early records is the entry(1) to the terminal and last record as the exit(0) to the end terminal
     gps_data_within_terminal_buffer[TerminalGPSField.ENTRY_EXIT.value] = Series(
@@ -115,10 +124,12 @@ def extract_trip_terminals(gps_data_within_terminal_buffer: DataFrame) -> DataFr
         subset=[TerminalGPSField.ENTRY_EXIT.value]
     ).reset_index(drop=True)
 
+    logger.info("Successfully extracted Entry/ Exit values for Trip Ends")
     return trip_terminals_gps_data
 
 
 def terminals_gps_data_to_trips(trip_terminals_gps_data: DataFrame) -> DataFrame:
+    logger.info("Started extracting Trips and assigning Trip ID")
     trip = 0
     for i in range(len(trip_terminals_gps_data) - 1):
         if (
@@ -138,4 +149,5 @@ def terminals_gps_data_to_trips(trip_terminals_gps_data: DataFrame) -> DataFrame
     )  # Removing outliers where no defined 2 trip terminals for a trip
     trips.reset_index(drop=True, inplace=True)
 
+    logger.info("Successfully extracted trips & finished assigning Trip ID")
     return trips

@@ -13,6 +13,7 @@ from gps2gtfs.utility.data_io_converter import (
     extend_geo_buffer,
     pandas_to_geo_data_frame,
 )
+from gps2gtfs.utility.logger import logger
 
 
 def create_stop_buffers(
@@ -21,10 +22,12 @@ def create_stop_buffers(
     buffer_radius: int,
     extended_buffer_radius: int,
 ) -> Tuple:
+
+    logger.info("Splitting stops dataframe into two based on route direction")
     raw_gps_geo_df = pandas_to_geo_data_frame(raw_gps_df)
     stops_geo_df = pandas_to_geo_data_frame(stops_df)
 
-    # split stops dataframe into two based on route direction
+    logger.info("Splitting stops dataframe into two based on route direction")
     directions: List[str] = stops_geo_df[StopField.DIRECTION.value].unique().tolist()
     directions = list(filter(lambda d: not d.isdigit(), directions))
     direction1_stops_geo_df = stops_geo_df[
@@ -41,6 +44,7 @@ def create_stop_buffers(
     direction1_stops_buffer = extend_geo_buffer(direction1_stops_geo_df, buffer_radius)
     direction2_stops_buffer = extend_geo_buffer(direction2_stops_geo_df, buffer_radius)
 
+    logger.info("Forming GEO Buffer Area to capture data points around bus stop")
     # creating additional extra buffer to accommodate points if they were missed in standard stop buffer
     direction1_stops_extended_buffer = extend_geo_buffer(
         direction1_stops_geo_df, extended_buffer_radius
@@ -63,6 +67,8 @@ def prepare_trajectory_df(
     processed_gps_df: DataFrame,
     trips_df: DataFrame,
 ) -> DataFrame:
+
+    logger.info("Preparing to add Trip Details to GPS Data")
     # gps records that are matched with end terminals, are merged with whole GPS records
     processed_gps_df = processed_gps_df[
         [
@@ -109,4 +115,5 @@ def prepare_trajectory_df(
         )
     )
 
+    logger.info("Successfully added Trip Details to GPS Data")
     return trajectory_df

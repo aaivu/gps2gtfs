@@ -7,4 +7,5 @@ from . import (  # noqa F401
     trip,
     utility,
     pipeline,
+    pipline_trip
 )

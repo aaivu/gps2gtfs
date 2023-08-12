@@ -2,6 +2,7 @@ from pandas import DataFrame, to_datetime
 
 from gps2gtfs.data_field.im_field import CleanedRawGPSField
 from gps2gtfs.data_field.input_field import RawGPSField
+from gps2gtfs.utility.logger import logger
 
 
 def clean(raw_gps_df: DataFrame) -> DataFrame:
@@ -39,6 +40,7 @@ def clean(raw_gps_df: DataFrame) -> DataFrame:
         1         2   40.7486   -73.9857 2023-07-27 10:20:30  2023-07-27  10:20:30
         0         1   37.7749  -122.4194 2023-07-27 12:34:56  2023-07-27  12:34:56
     """
+    logger.info("Getting ready to clean the Raw GPS data data")
     cleaned_raw_gps_df = raw_gps_df[
         (raw_gps_df[RawGPSField.LATITUDE.value] != 0)
         & (raw_gps_df[RawGPSField.LONGITUDE.value] != 0)
@@ -63,4 +65,5 @@ def clean(raw_gps_df: DataFrame) -> DataFrame:
         inplace=True,
     )
 
+    logger.info("Successfully cleaned the Raw GPS data data")
     return cleaned_raw_gps_df

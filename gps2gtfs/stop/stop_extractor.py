@@ -5,6 +5,7 @@ from geopandas import GeoDataFrame
 from pandas import DataFrame, concat
 from gps2gtfs.data_field.im_field import TrajectoryField
 from gps2gtfs.data_field.input_field import StopField
+from gps2gtfs.utility.logger import logger
 
 
 def extract_stops(
@@ -14,6 +15,7 @@ def extract_stops(
     direction1_stops_extended_buffer: GeoDataFrame,
     direction2_stops_extended_buffer: GeoDataFrame,
 ) -> DataFrame:
+    logger.info("Preparing to extract stops from GPS Data")
     # project to local coordinate system before buffer filtering
     trajectory_df = trajectory_df.to_crs("EPSG:5234")
 
@@ -41,6 +43,7 @@ def extract_stops(
     trip_all_points = concat([direction1_trajectory, direction2_trajectory])
     stops = trip_all_points.dropna()
 
+    logger.info("Successfully Extracted Stops")
     return stops
 
 
@@ -49,19 +52,23 @@ def match_gps_data_with_stops(
     stops_buffer_geo_df: GeoDataFrame,
     stops_extended_buffer_geo_df: GeoDataFrame,
 ) -> DataFrame:
+    logger.info("Preparing to match stops coordinates with GPS Data Points")
     num_processes = cpu_count()  # Number of available CPU cores
     chunk_size = len(trajectory_df) // num_processes
     chunks = [
         (
-            trajectory_df[i : i + chunk_size],
+            trajectory_df[i: i + chunk_size],
             stops_buffer_geo_df,
             stops_extended_buffer_geo_df,
         )
         for i in range(0, len(trajectory_df), chunk_size)
     ]
+
+    logger.info("Starting to match stops coordinates with GPS Data Points")
     with Pool(processes=num_processes) as pool:
         updated_chunks = pool.map(match_gps_points, chunks)
 
+    logger.info("Successfully matched stops coordinates with GPS Data Points")
     return concat(updated_chunks, ignore_index=True)
 
 
