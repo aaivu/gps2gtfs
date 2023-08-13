@@ -38,12 +38,13 @@ The library is organized into six main modules:
 - utility package has support utilities functions like io, conversions of data and loggers.
 - pipeline package has the module to run trip and trip stop.
 
-Architecture digram of gps2gfts
+Architecture digram of gps2gfts <br>
+
 <img width="1000" alt="img1" src="https://github.com/aaivu/gps2gtfs/assets/74850246/678af0a8-64e3-49b5-8fb6-66b331ea7cae" >
 
 <br>
 
-How the gps2gfts works
+How the gps2gfts works <br>
 <img width="1000" alt="img2" src="https://github.com/aaivu/gps2gtfs/assets/74850246/92cf2e62-2be4-49e1-b401-78ebbe20d194">
 
 ## Quick Example
