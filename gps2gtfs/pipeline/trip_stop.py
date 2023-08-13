@@ -16,7 +16,7 @@ def run(
     terminals_buffer_radius: int,
     stops_buffer_radius: int,
     stops_extended_buffer_radius: int,
-):
+) -> None:
     logger.info("Pipeline method called !")
     logger.info("Starting Pipeline for extracting Trip Data")
     loaded_data = load_data_for_trip_stop_pipeline(

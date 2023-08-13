@@ -7,10 +7,10 @@ from gps2gtfs.utility.logger import logger
 
 
 def run(
-        raw_gps_data_path: str,
-        trip_terminals_data_path: str,
-        terminals_buffer_radius: int,
-):
+    raw_gps_data_path: str,
+    trip_terminals_data_path: str,
+    terminals_buffer_radius: int,
+) -> None:
     logger.info("Pipeline method called !")
     logger.info("Starting Pipeline for extracting Trip Data")
     loaded_data = load_data_for_trip_pipeline(

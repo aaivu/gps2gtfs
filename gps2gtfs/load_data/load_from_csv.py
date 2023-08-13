@@ -95,9 +95,8 @@ def load_data_for_trip_pipeline(
     if not any([df is None for df in [raw_gps_df, trip_terminals_df]]):
         raw_gps_fields = {f.value for f in RawGPSField}
         trip_terminals_fields = {f.value for f in TerminalField}
-        if (
-            (not raw_gps_fields - set(raw_gps_df.columns.values))
-            and (not trip_terminals_fields - set(trip_terminals_df.columns.values))
+        if (not raw_gps_fields - set(raw_gps_df.columns.values)) and (
+            not trip_terminals_fields - set(trip_terminals_df.columns.values)
         ):
             logger.info("Data Loaded successfully for pipeline")
             return [raw_gps_df, trip_terminals_df]

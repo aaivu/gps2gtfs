@@ -30,7 +30,7 @@ def extract_trips(
     num_processes = cpu_count()  # Number of available CPU cores
     chunk_size = len(raw_gps_geo_df) // num_processes
     chunks = [
-        (raw_gps_geo_df[i: (i + chunk_size)], trip_terminals_geo_df, buffer_radius)
+        (raw_gps_geo_df[i : (i + chunk_size)], trip_terminals_geo_df, buffer_radius)
         for i in range(0, len(raw_gps_geo_df), chunk_size)
     ]
 

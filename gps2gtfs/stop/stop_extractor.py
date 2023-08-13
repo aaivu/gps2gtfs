@@ -57,7 +57,7 @@ def match_gps_data_with_stops(
     chunk_size = len(trajectory_df) // num_processes
     chunks = [
         (
-            trajectory_df[i: i + chunk_size],
+            trajectory_df[i : i + chunk_size],
             stops_buffer_geo_df,
             stops_extended_buffer_geo_df,
         )

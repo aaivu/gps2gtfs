@@ -22,7 +22,6 @@ def create_stop_buffers(
     buffer_radius: int,
     extended_buffer_radius: int,
 ) -> Tuple:
-
     logger.info("Splitting stops dataframe into two based on route direction")
     raw_gps_geo_df = pandas_to_geo_data_frame(raw_gps_df)
     stops_geo_df = pandas_to_geo_data_frame(stops_df)
@@ -67,7 +66,6 @@ def prepare_trajectory_df(
     processed_gps_df: DataFrame,
     trips_df: DataFrame,
 ) -> DataFrame:
-
     logger.info("Preparing to add Trip Details to GPS Data")
     # gps records that are matched with end terminals, are merged with whole GPS records
     processed_gps_df = processed_gps_df[

@@ -2,7 +2,7 @@ import logging
 import sys
 
 # Create a custom logger if it doesn't already exist
-logger = logging.getLogger('gps2gtfs')
+logger = logging.getLogger("gps2gtfs")
 if not logger.handlers:
     logger.setLevel(logging.DEBUG)
 
@@ -11,7 +11,10 @@ if not logger.handlers:
     console_handler.setLevel(logging.DEBUG)
 
     # Create formatter
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(funcName)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(funcName)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
     console_handler.setFormatter(formatter)
 
     # Add console handler to logger
