@@ -1,3 +1,6 @@
+import warnings
+
+from pandas.errors import SettingWithCopyWarning
 from gps2gtfs.load_data.load_from_csv import load_data_for_trip_pipeline
 from gps2gtfs.preprocessing.data_cleaner import clean
 from gps2gtfs.trip.feature_extractor import extract_trip_features
@@ -11,6 +14,9 @@ def run(
     trip_terminals_data_path: str,
     terminals_buffer_radius: int,
 ) -> None:
+    # Suppress the SettingWithCopyWarning
+    warnings.filterwarnings("ignore", category=SettingWithCopyWarning)
+
     logger.info("Pipeline method called !")
     logger.info("Starting Pipeline for extracting Trip Data")
     loaded_data = load_data_for_trip_pipeline(
