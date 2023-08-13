@@ -1,0 +1,28 @@
+stop_id,route_id,direction,address,latitude,longitude
+101,654,Kandy-Digana,Wales Park,7.291186017,80.63766185
+102,654,Kandy-Digana,Mahamaya,7.28784,80.64584
+103,654,Kandy-Digana,Lewella junction,7.29443,80.65003
+104,654,Kandy-Digana,Talwatta,7.286701,80.6603357
+105,654,Kandy-Digana,Tennekumbura Bridge,7.281866,80.66603
+106,654,Kandy-Digana,Kalapura Junction Busstop,7.27983,80.67621
+107,654,Kandy-Digana,Nattarampotha Junction Bus Stop,7.279117,80.67945
+108,654,Kandy-Digana,Kundasale New town,7.2809,80.68416
+109,654,Kandy-Digana,Warapitiya,7.28149,80.68635
+110,654,Kandy-Digana,Pallekele (Provincial Council),7.281322369,80.69676
+111,654,Kandy-Digana,Pachchakaatuwa,7.28473,80.70539
+112,654,Kandy-Digana,Balagolla,7.287349019,80.71400511
+113,654,Kandy-Digana,BOI,7.28411,80.7221
+114,654,Kandy-Digana,Kengalla,7.29152,80.72133
+201,654,Digana-Kandy,Kengalla,7.291726007,80.72143025
+202,654,Digana-Kandy,BOI,7.28411,80.7221
+203,654,Digana-Kandy,Balagolla,7.287349,80.71401
+204,654,Digana-Kandy,Pachchakaatuwa,7.28473,80.70539
+205,654,Digana-Kandy,Pallekele (Clock Tower),7.28036,80.69567
+206,654,Digana-Kandy,Warapitiya,7.28148,80.68672
+207,654,Digana-Kandy,Kundasale Police College,7.28039,80.68356
+208,654,Digana-Kandy,Nattarampotha ,7.279799826,80.67659381
+209,654,Digana-Kandy,Tennekumbura,7.28193,80.66594
+210,654,Digana-Kandy,Buwelikada,7.29312,80.64922
+211,654,Digana-Kandy,Dharmaraja,7.29067,80.64651
+212,654,Digana-Kandy,Children park,7.28681,80.64761
+213,654,Digana-Kandy,Hilwood,7.29021,80.6398
