@@ -5,27 +5,41 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 classifiers = [
     'Development Status :: 3 - Alpha',
-    "Programming Language :: Python :: 3",
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
-    'Programming Language :: Python :: 3.6',
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3 :: Only",  # Specify Python 3 only
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development",
 ]
 
 setup(
     name='gps2gtfs',
-    packages=['gps2gtfs'],
-    version='0.0.1',
-    description='Extracting travel time information from Bus GPS raw data',
+    packages=find_packages(),
+    version='0.0.2-rc3',
+    description='A Python package to process raw GPS data of public transit and transform to GTFS format.',
     long_description=long_description,
+    long_description_content_type="text/markdown",
     url='https://github.com/aaivu/gps2gtfs',
-    keywords=['gtfs', 'GPS', 'travel time', 'bus trave time'],  # Keywords that define your package best
+    keywords=['gtfs', 'GPS', 'travel time', 'bus travel time prediction'],
     author='AAIVU',
     author_email='helloaaivu@gmail.com',
     license='MIT',
     classifiers=classifiers,
-    package_dir={"": "src"},
     python_requires=">=3.6",
-    install_requires=['pandas', 'geopandas', 'numpy']
+    install_requires=['pandas', 'geopandas', 'numpy'],
+    project_urls={
+        "Homepage": "https://github.com/aaivu/gps2gtfs",
+        "Source": "https://github.com/aaivu/gps2gtfs",
+        "Download": "https://pypi.org/project/gps2gtfs/",
+        "Documentation": "https://github.com/aaivu/gps2gtfs/blob/master/README.md",
+        "Bug Tracker": "https://github.com/aaivu/gps2gtfs/issues",
+    }
 )
