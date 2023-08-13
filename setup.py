@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
-with open("README.md", "r", encoding="utf-8") as fh:
+with open("PACKAGE_DESCRIPTION.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 classifiers = [
-    'Development Status :: 3 - Alpha',
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3 :: Only",  # Specify Python 3 only
@@ -21,15 +21,15 @@ classifiers = [
 ]
 
 setup(
-    name='gps2gtfs',
+    name="gps2gtfs",
     packages=find_packages(),
-    version='0.0.2-rc4',
-    description='A Python package to process raw GPS data of public transit and transform to GTFS format.',
+    version="0.1.0",
+    description="A Python package to process raw GPS data of public transit and transform to GTFS format.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/aaivu/gps2gtfs',
-    keywords=['GTFS', 'GPS', 'travel time', 'Public Transit', 'Heterogeneous traffic condition', 'ITS'],
-    author='AAIVU',
+    url="https://github.com/aaivu/gps2gtfs",
+    keywords=['GTFS', 'GPS', 'Travel Time', 'Public Transit', 'Heterogeneous Traffic Condition', 'ITS'],
+    author="Aaivu",
     author_email='helloaaivu@gmail.com',
     license='MIT',
     classifiers=classifiers,
@@ -39,7 +39,7 @@ setup(
         "Homepage": "https://github.com/aaivu/gps2gtfs",
         "Source": "https://github.com/aaivu/gps2gtfs",
         "Download": "https://pypi.org/project/gps2gtfs/",
-        "Documentation": "https://github.com/aaivu/gps2gtfs/blob/master/README.md",
+        "Documentation": "https://github.com/aaivu/gps2gtfs/blob/master/PACKAGE_DESCRIPTION.md",
         "Bug Tracker": "https://github.com/aaivu/gps2gtfs/issues",
     }
 )
