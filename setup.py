@@ -28,7 +28,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/aaivu/gps2gtfs',
-    keywords=['gtfs', 'GPS', 'travel time', 'bus travel time prediction'],
+    keywords=['GTFS', 'GPS', 'travel time', 'Public Transit', 'Heterogeneous traffic condition', 'ITS'],
     author='AAIVU',
     author_email='helloaaivu@gmail.com',
     license='MIT',
