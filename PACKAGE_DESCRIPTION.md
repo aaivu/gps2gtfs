@@ -14,47 +14,53 @@
 
 ## Description
 
-<div style="text-align:justify">
-
-gps2gtfs is a python package that enables users to import for the task of preprocessing the GPS raw data and transfer to GTFS data. DataFrame and GeoDataFrame were used to handle data. Using new straight forward efficient techniques for raw GPS data to extract trips, stops sequence, dwell time at stops throughout the trip, travel time, running time in between stops and transfer to GTFS data. Currently the gps2gtfs package will handle static (schedule) heterogeneous traffic trip data, and in future can be implemented for dynamic real time trip data. Also the visualization package can be additionally combined with existing packages.
-
+<div style="text-align: justify;">
+The "gps2gtfs" Python package provides a streamlined solution for preprocessing GPS (Global Positioning System) raw data and converting it into GTFS (General Transit Feed Specification) data format. Leveraging the power of DataFrame and GeoDataFrame with parallelization, this package offers efficient methods to extract essential trip details from raw GPS data. These details encompass trip sequences, stop information, arrival time to stops, departure time from stops, dwell time at stops, travel durations, running times between stops, and the seamless transformation into GTFS data structure. Currently, "gps2gtfs" handles static (schedule) trip data at heterogeneous traffic condition, with the potential for future expansion to accommodate dynamic real-time trip data. Furthermore, in the future, a visualization package can be seamlessly integrated with existing packages.
 </div>
-Keywords: GTFS, GPS, travel time, Public Transit, Heterogeneous traffic condition, ITS
+
+<br>
+
+<b>Keywords:</b> GTFS, GPS, Travel Time, Public Transit, Heterogeneous Traffic Condition, ITS (Intelligent Transportation System)
 
 ## Architecture
 
-<div style="text-align:justify">
-gps2gtfs is written in Python 3. Package structure was implemented without coupling in between the packages. The main packages and functionalities are: data_field, load data, preprocessing, trip, stop, utility. Users should be given in- put only for one route. Multiple routes can be input to the pipeline using iteration by users.
+<div style="text-align: justify;">
+The "gps2gtfs" framework is developed using Python 3, with a thoughtfully designed package structure that ensures minimal interdependence among the main packages. The core components encompass distinct packages, each serving a specific purpose: data_field, load_data, preprocessing, trip, stop, reporting, pipeline, and utility. Users are expected to provide input for a single route, and the system facilitates the inclusion of multiple routes into the pipeline through user-driven iteration.
 </div>
 
-The library is organized into six main modules:
+<br>
 
-- data_field will keep column names of user input and fixed number of output
-  column names. Also fields of user input should be a super set of defined fields
-  in this package.
-- load_data to store trip and stop data for a route of a transit vehicle.
-- preprocessing package will clean the above loaded data.
-- stop package will identify stops and create stops related features.
-- utility package has support utilities functions like io, conversions of data and loggers.
-- pipeline package has the module to run trip and trip stop.
+The package is structured into eight(8) primary packages:
+
+1. <b>data_field:</b> This package is responsible for managing column names for user input and a predefined set of output columns. The fields provided by the user should be a superset of the defined fields within this package.
+2. <b>load_data:</b> This package handles the loading of necessary data into the pipeline.
+3. <b>preprocessing:</b> The preprocessing package is designed to clean the data loaded from the previous step.
+4. <b>trip:</b> The trip package focuses on extracting trips and generating associated features.
+5. <b>stop:</b> Within the stop package, the identification of stops and the creation of related features take place.
+6. <b>reporting:</b> This package is responsible for generating outputs containing the extracted information.
+7. <b>pipeline:</b> This package contains functionality to execute the trip extraction pipeline and the trip & stop extraction pipeline.
+8. <b>utility:</b> The utility module provides support for various utility functions, including input/output operations, data conversions, and logging.
+
 
 ### Architecture digram of gps2gfts
 
 <img width="1000" alt="img1" src="https://github.com/aaivu/gps2gtfs/assets/74850246/678af0a8-64e3-49b5-8fb6-66b331ea7cae" >
 
-<br>
+<hr>
 
 ### How the gps2gfts works
 
 <img width="1000" alt="img2" src="https://github.com/aaivu/gps2gtfs/assets/74850246/92cf2e62-2be4-49e1-b401-78ebbe20d194">
 
+<br>
+
 ## Quick Example
 
-The input files must be in CSV format. And a main thread should be there to use this package.
+It is essential to provide input files in CSV format for proper functionality. Additionally, the utilization of this package requires the presence of a main thread.
 
 ### 1. Pipeline to extract trips details
 
-```python
+```py
 from gps2gtfs.pipeline.trip import run
 
 
@@ -70,9 +76,11 @@ if __name__ == "__main__":
     )
 ```
 
+<hr>
+
 ### 2. Pipeline to extract trips and stops details
 
-```python
+```py
 from gps2gtfs.pipeline.trip_stop import run
 
 
