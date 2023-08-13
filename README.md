@@ -54,7 +54,7 @@ The raw GPS data set and processed GPS data sets are available upon request (con
 
 ### License
 
-Apache License 2.0
+MIT License
 
 ### Code of Conduct
 
