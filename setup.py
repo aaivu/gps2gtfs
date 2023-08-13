@@ -23,7 +23,7 @@ classifiers = [
 setup(
     name='gps2gtfs',
     packages=find_packages(),
-    version='0.0.2-rc3',
+    version='0.0.2-rc4',
     description='A Python package to process raw GPS data of public transit and transform to GTFS format.',
     long_description=long_description,
     long_description_content_type="text/markdown",
