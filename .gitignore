@@ -38,6 +38,8 @@ bld/
 
 .idea/
 venv/
+.DS_Store
+.ipynb_checkpoints/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
