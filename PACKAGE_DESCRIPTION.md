@@ -1,4 +1,4 @@
-# gps2gtfs: A Python package to process raw GPS data of public transit and transform to GTFS format.
+# gps2gtfs: A Python package to process raw GPS data of public transit and transform to GTFS format
 
 ![project] ![research]
 
@@ -116,7 +116,7 @@ The raw GPS data set and processed GPS data sets are available upon request (con
 
 ## License
 
-MIT License. You can see [here](https://opensource.org/license/mit/)
+MIT License. You can see [here](https://github.com/aaivu/gps2gtfs/blob/master/LICENSE).
 
 ## Code of Conduct
 
