@@ -40,6 +40,8 @@ bld/
 venv/
 .DS_Store
 .ipynb_checkpoints/
+build/
+gps2gtfs.egg-info/
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
